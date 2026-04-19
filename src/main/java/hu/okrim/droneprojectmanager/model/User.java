@@ -1,7 +1,10 @@
 package hu.okrim.droneprojectmanager.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -13,15 +16,13 @@ import java.util.UUID;
 @Table(name = "users")
 @Data
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    @Column(name = "schema_name", nullable = false, unique = true)
-    private String schemaName;
-
     @Column(name = "account_number", nullable = false, unique = true)
     private Long accountNumber;
+
+    @Column(name = "schema", nullable = false, unique = true)
+    private UUID schema;
 
     @Column(name = "password", nullable = false)
     private String password;
