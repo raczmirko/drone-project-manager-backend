@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS locations (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     gps_altitude DOUBLE PRECISION NOT NULL,
     gps_latitude DOUBLE PRECISION NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS projects (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     status VARCHAR(50),
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS projects (
 );
 
 CREATE TABLE IF NOT EXISTS project_files (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     project_id BIGINT NOT NULL,
     filename VARCHAR(255) NOT NULL,
     binary_content BYTEA NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS project_files (
 );
 
 CREATE TABLE IF NOT EXISTS drone_operations (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
     objective TEXT,
     operation_date DATE,
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS drone_operations (
 );
 
 CREATE TABLE IF NOT EXISTS drone_operation_files (
-    id BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     drone_operation_id BIGINT NOT NULL,
     filename VARCHAR(255) NOT NULL,
     binary_content BYTEA NOT NULL,
