@@ -1,7 +1,7 @@
 package hu.okrim.droneprojectmanager.security.manager;
 
 import hu.okrim.droneprojectmanager.model.User;
-import hu.okrim.droneprojectmanager.service.UserService;
+import hu.okrim.droneprojectmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomAuthenticationManager implements AuthenticationManager {
 
-    private UserService userServiceImpl;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         // Attempt to retrieve user from database
-        User user = userServiceImpl.findByAccountNumber(Long.valueOf(authentication.getName()))
+        User user = userRepository.findByAccountNumber(Long.valueOf(authentication.getName()))
                 .orElseThrow(() -> new BadCredentialsException("Invalid account number"));
 
         // Validate password
@@ -31,6 +31,6 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         }
 
         // If valid, return authentication token
-        return new UsernamePasswordAuthenticationToken(authentication.getName(), user.getPassword());
+        return new UsernamePasswordAuthenticationToken(user, user.getPassword());
     }
 }

@@ -1,14 +1,15 @@
 package hu.okrim.droneprojectmanager.security;
 
+import hu.okrim.droneprojectmanager.config.TenantFilter;
 import hu.okrim.droneprojectmanager.security.filter.AuthenticationFilter;
 import hu.okrim.droneprojectmanager.security.filter.ExceptionHandlerFilter;
 import hu.okrim.droneprojectmanager.security.filter.JWTAuthorizationFilter;
 import hu.okrim.droneprojectmanager.security.manager.CustomAuthenticationManager;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,16 +22,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@AllArgsConstructor
 public class SecurityConfig {
 
     @Autowired
     CustomAuthenticationManager customAuthenticationManager;
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private TenantFilter tenantFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -47,6 +45,7 @@ public class SecurityConfig {
                 .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
                 .addFilter(authenticationFilter)
                 .addFilterAfter(new JWTAuthorizationFilter(), AuthenticationFilter.class)
+                .addFilterAfter(tenantFilter, JWTAuthorizationFilter.class)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
