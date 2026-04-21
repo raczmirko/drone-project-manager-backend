@@ -3,16 +3,12 @@ package hu.okrim.droneprojectmanager.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.okrim.droneprojectmanager.dto.UserDto;
+import hu.okrim.droneprojectmanager.dto.UserRequestDto;
 import hu.okrim.droneprojectmanager.model.User;
 import hu.okrim.droneprojectmanager.security.SecurityConstants;
-import hu.okrim.droneprojectmanager.security.manager.CustomAuthenticationManager;
-import hu.okrim.droneprojectmanager.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,12 +29,12 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             throws AuthenticationException {
         try {
             // Parse the request body
-            UserDto userDto = new ObjectMapper().readValue(request.getInputStream(), UserDto.class);
+            UserRequestDto userRequestDto = new ObjectMapper().readValue(request.getInputStream(), UserRequestDto.class);
 
             // Create an Authentication object
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    userDto.getAccountNumber(), // Principal (accountNumber)
-                    userDto.getPassword());    // Credentials (password)
+                    userRequestDto.accountNumber(), // Principal (accountNumber)
+                    userRequestDto.password());    // Credentials (password)
 
             // Delegate authentication to the AuthenticationManager (CustomAuthenticationManager)
             return this.getAuthenticationManager().authenticate(authentication);
@@ -61,8 +57,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
             FilterChain chain,
             Authentication authResult) throws IOException
     {
-        System.out.println("Authentication Principal in Filter: " + authResult.getPrincipal().getClass());
-
         // Retrieve the authenticated user from the Authentication object
         User user = (User) authResult.getPrincipal();
 

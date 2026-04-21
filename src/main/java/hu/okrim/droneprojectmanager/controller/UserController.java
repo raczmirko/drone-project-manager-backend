@@ -1,7 +1,7 @@
 package hu.okrim.droneprojectmanager.controller;
 
 import hu.okrim.droneprojectmanager.dto.ApiResponse;
-import hu.okrim.droneprojectmanager.dto.UserDto;
+import hu.okrim.droneprojectmanager.dto.UserRequestDto;
 import hu.okrim.droneprojectmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@RequestBody UserDto userDto) {
-        ApiResponse response = userService.registerUser(userDto);
+    public ResponseEntity<ApiResponse> register(@RequestBody UserRequestDto userRequestDto) {
+        ApiResponse response = userService.registerUser(userRequestDto);
         return ResponseEntity.status(response.isSuccess() ? 201 : 400).body(response);
     }
 

@@ -1,7 +1,7 @@
 package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.dto.ApiResponse;
-import hu.okrim.droneprojectmanager.dto.UserDto;
+import hu.okrim.droneprojectmanager.dto.UserRequestDto;
 import hu.okrim.droneprojectmanager.model.User;
 import hu.okrim.droneprojectmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,16 +46,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional // Transactional makes sure there are no orphan schemas in case of failure
-    public ApiResponse registerUser(UserDto userDto) {
+    public ApiResponse registerUser(UserRequestDto userRequestDto) {
         // Check if account number already exists
-        if (userRepository.findByAccountNumber(Long.valueOf(userDto.getAccountNumber())).isPresent()) {
+        if (userRepository.findByAccountNumber(userRequestDto.accountNumber()).isPresent()) {
             return new ApiResponse(false, "Account number already exists!", null);
         }
 
         // Create and save user
         User newUser = new User();
-        newUser.setAccountNumber(Long.valueOf(userDto.getAccountNumber()));
-        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        newUser.setAccountNumber(userRequestDto.accountNumber());
+        newUser.setPassword(passwordEncoder.encode(userRequestDto.password()));
         newUser.setSchema(UUID.randomUUID());
         newUser.setRegistrationDate(Instant.now());
 
