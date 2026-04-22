@@ -1,15 +1,20 @@
 package hu.okrim.droneprojectmanager.controller;
 
+import hu.okrim.droneprojectmanager.dto.ProjectFileResponseDto;
 import hu.okrim.droneprojectmanager.dto.ProjectRequestDto;
 import hu.okrim.droneprojectmanager.model.Project;
+import hu.okrim.droneprojectmanager.model.ProjectFile;
+import hu.okrim.droneprojectmanager.service.ProjectFileService;
 import hu.okrim.droneprojectmanager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -18,6 +23,7 @@ import java.util.UUID;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ProjectFileService projectFileService;
 
     /**
      * Endpoint to fetch a paginated list of projects.
@@ -30,9 +36,9 @@ public class ProjectController {
         return projectService.getAllProjects(pageable);
     }
 
-    @GetMapping("/{code}")
-    public Project getProjectByCode(@PathVariable String code) {
-        return projectService.getProjectByCode(code);
+    @GetMapping("/{projectCode}")
+    public Project getProjectByCode(@PathVariable String projectCode) {
+        return projectService.getProjectByCode(projectCode);
     }
 
     @PostMapping
@@ -52,6 +58,53 @@ public class ProjectController {
     public void deleteProject(@PathVariable String code) {
         Project project = projectService.getProjectByCode(code);
         projectService.deleteProject(project);
+    }
+
+    @GetMapping("/{projectCode}/files")
+    public Page<ProjectFileResponseDto> getProjectFiles(
+            @PathVariable String projectCode,
+            @PageableDefault(size = 20) Pageable pageable)
+    {
+        // Fetch the project by code
+        Project project = projectService.getProjectByCode(projectCode);
+
+        // Fetch paginated project files
+        Page<ProjectFile> projectFiles = projectFileService.findAllByProjectId(project.getId(), pageable);
+
+        // Map ProjectFile entities to ProjectFileResponseDto
+        return projectFiles.map(file -> new ProjectFileResponseDto(file.getId(), file.getFilename()));
+    }
+
+    @PostMapping("/{projectCode}/files")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void uploadProjectFile(
+            @PathVariable String projectCode,
+            @RequestParam("file") MultipartFile file
+    ) throws IOException {
+        Project project = projectService.getProjectByCode(projectCode);
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty.");
+        }
+
+        // Throw an error if the file size exceeds 300MB
+        if (file.getSize() > 300_000_000) {
+            throw new IllegalArgumentException("Uploaded file is too large. Maximum size is 300MB.");
+        }
+
+        ProjectFile projectFile = new ProjectFile(
+                UUID.randomUUID(),
+                project,
+                file.getOriginalFilename(),
+                file.getBytes());
+
+        projectFileService.saveProjectFile(projectFile);
+    }
+
+    @DeleteMapping("/documents/{documentId}")
+    public void deleteProjectFile(@PathVariable UUID documentId)
+    {
+        projectFileService.deleteProjectFile(projectFileService.getProjectFileById(documentId));
     }
 
 }
