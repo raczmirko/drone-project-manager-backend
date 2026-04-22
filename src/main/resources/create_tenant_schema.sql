@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS projects (
 
 CREATE TABLE IF NOT EXISTS project_files (
     id UUID PRIMARY KEY,
-    project_id BIGINT NOT NULL,
+    project_id UUID NOT NULL,
     filename VARCHAR(255) NOT NULL,
     binary_content BYTEA NOT NULL,
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
@@ -29,11 +29,12 @@ CREATE TABLE IF NOT EXISTS project_files (
 
 CREATE TABLE IF NOT EXISTS drone_operations (
     id UUID PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
+    code VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
     objective TEXT,
     operation_date DATE,
     description TEXT,
-    location_id BIGINT,
+    location_id UUID,
     drone VARCHAR(255) NOT NULL,
     flight_mode VARCHAR(100),
     weather_description TEXT,
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS drone_operations (
 
 CREATE TABLE IF NOT EXISTS drone_operation_files (
     id UUID PRIMARY KEY,
-    drone_operation_id BIGINT NOT NULL,
+    drone_operation_id uuid NOT NULL,
     filename VARCHAR(255) NOT NULL,
     binary_content BYTEA NOT NULL,
     FOREIGN KEY (drone_operation_id) REFERENCES drone_operations(id) ON DELETE CASCADE
