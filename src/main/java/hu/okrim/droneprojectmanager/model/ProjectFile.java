@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Getter
@@ -25,6 +26,12 @@ public class ProjectFile {
 
     @Column(name = "filename", nullable = false)
     private String filename;
+
+    @Column(name = "upload_date", nullable = false)
+    private LocalDate uploadDate;
+
+    @Column(name = "size", nullable = false)
+    private Long size;
 
     @Column(name = "binary_content", nullable = false, columnDefinition = "bytea")
     private byte[] binaryContent;

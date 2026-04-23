@@ -24,7 +24,7 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public ProjectFile getProjectFileById(UUID id) {
-        return null;
+        return projectFileRepository.getReferenceById(id);
     }
 
     @Override
