@@ -36,7 +36,7 @@ public class TenantFilter implements Filter {
         chain.doFilter(httpRequest, httpResponse);
 
         // Optionally reset the schema after the request
-        jdbcTemplate.execute("SET search_path TO public");
+//        jdbcTemplate.execute("SET search_path TO public");
     }
 
     private String extractSchemaFromRequest(HttpServletRequest request) {

@@ -48,7 +48,6 @@ public class ProjectController {
     @PostMapping
     public void createProject(@RequestBody ProjectRequestDto projectRequestDto) {
         Project project = new Project();
-        project.setId(UUID.randomUUID());
         project.setName(projectRequestDto.name());
         project.setCode(projectRequestDto.code());
         project.setStatus(projectRequestDto.status());
