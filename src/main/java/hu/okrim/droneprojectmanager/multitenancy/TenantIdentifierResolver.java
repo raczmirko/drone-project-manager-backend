@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+/**
+ * Resolves the current tenant identifier based on the tenant context.
+ */
 @Component
 public class TenantIdentifierResolver
         implements CurrentTenantIdentifierResolver<String>, HibernatePropertiesCustomizer {

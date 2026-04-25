@@ -14,6 +14,10 @@ import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
+/**
+ * Filter to set the tenant context based on the request. The JWT token of each request contains the tenant schema,
+ * which is extracted and set as the tenant context.
+ */
 @Component
 @RequiredArgsConstructor
 public class TenantFilter extends GenericFilterBean {
