@@ -67,6 +67,8 @@ CREATE TABLE IF NOT EXISTS drone_operation_files (
     id UUID PRIMARY KEY,
     drone_operation_id uuid NOT NULL,
     filename VARCHAR(255) NOT NULL,
+    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    size BIGINT NOT NULL,
     binary_content BYTEA NOT NULL,
     FOREIGN KEY (drone_operation_id) REFERENCES drone_operations(id) ON DELETE CASCADE
 );

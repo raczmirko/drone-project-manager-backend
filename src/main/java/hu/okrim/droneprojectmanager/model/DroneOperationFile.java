@@ -7,28 +7,27 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "project_files")
+@Table(name = "drone_operation_files")
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectFile extends File {
+public class DroneOperationFile extends File {
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
-    private Project project;
+    @JoinColumn(name = "drone_operation_id")
+    private DroneOperation droneOperation;
 
-    public ProjectFile(
-            Project project,
+    public DroneOperationFile(
+            DroneOperation droneOperation,
             String filename,
             LocalDate uploadDate,
             Long size,
             byte[] binaryContent
     ) {
-        this.project = project;
+        this.droneOperation = droneOperation;
         this.filename = filename;
         this.uploadDate = uploadDate;
         this.size = size;

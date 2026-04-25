@@ -4,6 +4,7 @@ import hu.okrim.droneprojectmanager.dto.DroneOperationRequestDto;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.model.Location;
 import hu.okrim.droneprojectmanager.model.Project;
+import hu.okrim.droneprojectmanager.service.DroneOperationFileService;
 import hu.okrim.droneprojectmanager.service.DroneOperationService;
 import hu.okrim.droneprojectmanager.service.LocationService;
 import hu.okrim.droneprojectmanager.service.ProjectService;
@@ -15,14 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/projects/{projectCode}/operations")
 @RequiredArgsConstructor
 public class DroneOperationController {
 
     private final DroneOperationService droneOperationService;
+    private final DroneOperationFileService droneOperationFileService;
     private final ProjectService projectService;
     private final LocationService locationService;
 
