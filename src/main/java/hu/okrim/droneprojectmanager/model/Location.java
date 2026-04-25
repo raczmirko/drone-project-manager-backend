@@ -26,14 +26,14 @@ public class Location {
     private String name;
 
     @Column(name = "gps_longitude", nullable = false)
-    private Double gpsLongitude;
+    private Double longitude;
 
     @Column(name = "gps_latitude", nullable = false)
-    private Double gpsLatitude;
+    private Double latitude;
 
-    public Location(String name, Double gpsLongitude, Double gpsLatitude) {
+    public Location(String name, Double longitude, Double latitude) {
         this.name = name;
-        this.gpsLongitude = gpsLongitude;
-        this.gpsLatitude = gpsLatitude;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 }
