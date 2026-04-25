@@ -102,12 +102,12 @@ public class ProjectController {
         }
 
         ProjectFile projectFile = new ProjectFile(
-                UUID.randomUUID(),
                 project,
                 file.getOriginalFilename(),
                 LocalDate.now(),
                 file.getSize(),
-                file.getBytes());
+                file.getBytes()
+        );
 
         projectFileService.saveProjectFile(projectFile);
 

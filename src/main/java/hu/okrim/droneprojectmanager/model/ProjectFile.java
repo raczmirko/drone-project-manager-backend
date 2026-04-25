@@ -36,4 +36,18 @@ public class ProjectFile {
 
     @Column(name = "binary_content", nullable = false, columnDefinition = "bytea")
     private byte[] binaryContent;
+
+    public ProjectFile(
+            Project project,
+            String filename,
+            LocalDate uploadDate,
+            Long size,
+            byte[] binaryContent
+    ) {
+        this.project = project;
+        this.filename = filename;
+        this.uploadDate = uploadDate;
+        this.size = size;
+        this.binaryContent = binaryContent;
+    }
 }
