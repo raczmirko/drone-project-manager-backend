@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/projects/{code}/drone-operations")
+@RequestMapping("/projects/{projectCode}/operations")
 @RequiredArgsConstructor
 public class DroneOperationController {
 
@@ -28,20 +28,20 @@ public class DroneOperationController {
 
     @GetMapping
     public Page<DroneOperation> getAll(
-            @PathVariable String code,
+            @PathVariable String projectCode,
             @PageableDefault(size = 20) Pageable pageable
     ) {
-        Project project = projectService.getProjectByCode(code);
+        Project project = projectService.getProjectByCode(projectCode);
         return droneOperationService.getAll(project.getId(), pageable);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DroneOperation> getById(
-            @PathVariable String code,
-            @PathVariable UUID id
+    @GetMapping("/{operationCode}")
+    public ResponseEntity<DroneOperation> getByCode(
+            @PathVariable String projectCode,
+            @PathVariable String operationCode
     ) {
-        Project project = projectService.getProjectByCode(code);
-        DroneOperation droneOperation = droneOperationService.getById(id);
+        Project project = projectService.getProjectByCode(projectCode);
+        DroneOperation droneOperation = droneOperationService.getByCode(operationCode);
 
         validateOperationBelongsToProject(droneOperation, project);
 
@@ -50,10 +50,10 @@ public class DroneOperationController {
 
     @PostMapping
     public ResponseEntity<DroneOperation> create(
-            @PathVariable String code,
+            @PathVariable String projectCode,
             @RequestBody DroneOperationRequestDto requestDto
     ) {
-        Project project = projectService.getProjectByCode(code);
+        Project project = projectService.getProjectByCode(projectCode);
 
         DroneOperation droneOperation = new DroneOperation();
         droneOperation.setProject(project);
@@ -79,14 +79,14 @@ public class DroneOperationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(droneOperation);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{operationCode}")
     public ResponseEntity<DroneOperation> update(
-            @PathVariable String code,
-            @PathVariable UUID id,
+            @PathVariable String projectCode,
+            @PathVariable String operationCode,
             @RequestBody DroneOperation request
     ) {
-        Project project = projectService.getProjectByCode(code);
-        DroneOperation existing = droneOperationService.getById(id);
+        Project project = projectService.getProjectByCode(projectCode);
+        DroneOperation existing = droneOperationService.getByCode(operationCode);
 
         validateOperationBelongsToProject(existing, project);
 
@@ -116,13 +116,13 @@ public class DroneOperationController {
         return ResponseEntity.ok(existing);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{operationCode}")
     public ResponseEntity<Void> delete(
-            @PathVariable String code,
-            @PathVariable UUID id
+            @PathVariable String projectCode,
+            @PathVariable String operationCode
     ) {
-        Project project = projectService.getProjectByCode(code);
-        DroneOperation droneOperation = droneOperationService.getById(id);
+        Project project = projectService.getProjectByCode(projectCode);
+        DroneOperation droneOperation = droneOperationService.getByCode(operationCode);
 
         validateOperationBelongsToProject(droneOperation, project);
 
