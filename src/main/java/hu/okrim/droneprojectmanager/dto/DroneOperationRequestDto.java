@@ -17,7 +17,6 @@ public record DroneOperationRequestDto (
         Double kpIndex,
         LocalDateTime takeoffTime,
         LocalDateTime landingTime,
-        Double flightLength,
         Integer flightDurationSeconds
 ){
 }

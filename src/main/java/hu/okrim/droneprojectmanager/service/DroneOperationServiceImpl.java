@@ -2,6 +2,7 @@ package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.repository.DroneOperationRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ * Drone operation service implementation.
+ */
 @Service
 @RequiredArgsConstructor
 public class DroneOperationServiceImpl implements DroneOperationService {
@@ -27,7 +31,7 @@ public class DroneOperationServiceImpl implements DroneOperationService {
 
     @Override
     public DroneOperation getByCode(String code) {
-        return droneOperationRepository.findByCode(code);
+        return droneOperationRepository.findByCode(code).orElseThrow(() -> new EntityNotFoundException("Drone operation not found: " + code));
     }
 
     @Override

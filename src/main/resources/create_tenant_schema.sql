@@ -72,3 +72,38 @@ CREATE TABLE IF NOT EXISTS drone_operation_files (
     binary_content BYTEA NOT NULL,
     FOREIGN KEY (drone_operation_id) REFERENCES drone_operations(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS operation_image_metadata
+(
+    id UUID PRIMARY KEY,
+    operation_id UUID NOT NULL,
+    original_filename VARCHAR(512) NOT NULL,
+    mime_type VARCHAR(128),
+    file_size_bytes BIGINT,
+    image_width INTEGER,
+    image_height INTEGER,
+    captured_at TIMESTAMP WITHOUT TIME ZONE,
+    gps_latitude NUMERIC,
+    gps_longitude NUMERIC,
+    gps_altitude DOUBLE PRECISION,
+    camera_make VARCHAR(255),
+    camera_model VARCHAR(255),
+    orientation INTEGER,
+    focal_length DOUBLE PRECISION,
+    iso_value INTEGER,
+    aperture DOUBLE PRECISION,
+    exposure_time VARCHAR(64),
+    metadata_status VARCHAR(32) NOT NULL DEFAULT 'EXTRACTED',
+    metadata_error TEXT,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_operation_image_metadata_operation
+        FOREIGN KEY (operation_id) REFERENCES drone_operations (id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_operation_image_metadata_latitude
+        CHECK (gps_latitude IS NULL OR (gps_latitude >= -90 AND gps_latitude <= 90)),
+
+    CONSTRAINT chk_operation_image_metadata_longitude
+        CHECK (gps_longitude IS NULL OR (gps_longitude >= -180 AND gps_longitude <= 180))
+);

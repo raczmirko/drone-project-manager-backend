@@ -66,9 +66,6 @@ public class DroneOperation extends BaseEntity {
 
     // -------- FLIGHT ANALYSIS FIELDS --------
 
-    @Column(name = "flight_length")
-    private Double flightLength;
-
     @Column(name = "flight_duration_seconds", columnDefinition = "interval")
     private Integer flightDurationSeconds;
 

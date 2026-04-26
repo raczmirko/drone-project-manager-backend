@@ -66,7 +66,6 @@ public class DroneOperationController {
         droneOperation.setKpIndex(requestDto.kpIndex());
         droneOperation.setTakeoffTime(requestDto.takeoffTime());
         droneOperation.setLandingTime(requestDto.landingTime());
-        droneOperation.setFlightLength(requestDto.flightLength());
         droneOperation.setFlightDurationSeconds(requestDto.flightDurationSeconds());
 
         Location location = locationService.getLocationById(requestDto.locationId());
@@ -99,7 +98,6 @@ public class DroneOperationController {
         existing.setKpIndex(requestDto.kpIndex());
         existing.setTakeoffTime(requestDto.takeoffTime());
         existing.setLandingTime(requestDto.landingTime());
-        existing.setFlightLength(requestDto.flightLength());
         existing.setFlightDurationSeconds(requestDto.flightDurationSeconds());
 
         droneOperationService.save(existing);
