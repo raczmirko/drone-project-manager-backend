@@ -2,7 +2,7 @@ package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataPageResponse;
+import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import hu.okrim.droneprojectmanager.mapper.OperationImageMetadataMapper;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.model.DroneOperationImageMetadata;
@@ -11,7 +11,9 @@ import hu.okrim.droneprojectmanager.repository.DroneOperationImageMetadataReposi
 import hu.okrim.droneprojectmanager.repository.DroneOperationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,20 +70,26 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 .build();
     }
 
+    /**
+     * Get a page of image metadata for a specific operation.
+     * @param operationCode The code of the operation.
+     * @param pageable The pagination information.
+     * @return The page of image metadata.
+     */
     @Override
     @Transactional(readOnly = true)
-    public OperationImageMetadataPageResponse getPage(String operationCode, int page, int size) {
-        return OperationImageMetadataMapper.toPageResponse(
-                imageMetadataRepository.findByOperationCode(
-                        operationCode,
-                        PageRequest.of(
-                                page,
-                                size,
-                                Sort.by(Sort.Direction.DESC, "capturedAt")
-                                        .and(Sort.by(Sort.Direction.DESC, "createdAt"))
-                        )
-                )
+    public Page<OperationImageMetadataListItemResponse> getPage(String operationCode, Pageable pageable) {
+        Sort defaultSort = Sort.by(Sort.Direction.DESC, "capturedAt")
+                .and(Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        Pageable effectivePageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort().isSorted() ? pageable.getSort() : defaultSort
         );
+
+        return imageMetadataRepository.findByOperationCode(operationCode, effectivePageable)
+                .map(OperationImageMetadataMapper::toListItemResponse);
     }
 
     /**

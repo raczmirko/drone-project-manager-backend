@@ -2,7 +2,9 @@ package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataPageResponse;
+import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,12 +24,11 @@ public interface OperationImageMetadataService {
 
     /**
      * Get the page of image metadata for the operation.
-     * @param operationCode The code of the operation to get metadata for.
-     * @param page The page number to retrieve.
-     * @param size The number of items per page.
+     * @param operationCode The code of the operation.
+     * @param pageable The pagination information.
      * @return The page of image metadata.
      */
-    OperationImageMetadataPageResponse getPage(String operationCode, int page, int size);
+    Page<OperationImageMetadataListItemResponse> getPage(String operationCode, Pageable pageable);
 
     /**
      * Analyzes the flight of a drone operation and updates the operation's metadata.

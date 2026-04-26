@@ -2,9 +2,11 @@ package hu.okrim.droneprojectmanager.controller;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataPageResponse;
+import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import hu.okrim.droneprojectmanager.service.OperationImageMetadataService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,12 +41,11 @@ public class OperationImageMetadataController {
      * Get the page of image metadata for the operation.
      */
     @GetMapping
-    public OperationImageMetadataPageResponse getPage(
+    public Page<OperationImageMetadataListItemResponse> getPage(
             @PathVariable String operationCode,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            Pageable pageable
     ) {
-        return operationImageMetadataService.getPage(operationCode, page, size);
+        return operationImageMetadataService.getPage(operationCode, pageable);
     }
 
     /**
