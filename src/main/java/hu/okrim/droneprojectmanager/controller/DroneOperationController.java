@@ -4,7 +4,6 @@ import hu.okrim.droneprojectmanager.dto.DroneOperationRequestDto;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.model.Location;
 import hu.okrim.droneprojectmanager.model.Project;
-import hu.okrim.droneprojectmanager.service.DroneOperationFileService;
 import hu.okrim.droneprojectmanager.service.DroneOperationService;
 import hu.okrim.droneprojectmanager.service.LocationService;
 import hu.okrim.droneprojectmanager.service.ProjectService;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 public class DroneOperationController {
 
     private final DroneOperationService droneOperationService;
-    private final DroneOperationFileService droneOperationFileService;
     private final ProjectService projectService;
     private final LocationService locationService;
 
@@ -59,8 +57,8 @@ public class DroneOperationController {
         droneOperation.setProject(project);
         droneOperation.setCode(requestDto.code());
         droneOperation.setName(requestDto.name());
+        droneOperation.setDate(requestDto.date());
         droneOperation.setObjective(requestDto.objective());
-        droneOperation.setOperationDate(requestDto.operationDate());
         droneOperation.setDescription(requestDto.description());
         droneOperation.setDrone(requestDto.drone());
         droneOperation.setFlightMode(requestDto.flightMode());
@@ -69,7 +67,7 @@ public class DroneOperationController {
         droneOperation.setTakeoffTime(requestDto.takeoffTime());
         droneOperation.setLandingTime(requestDto.landingTime());
         droneOperation.setFlightLength(requestDto.flightLength());
-        droneOperation.setFlightDuration(requestDto.flightDuration());
+        droneOperation.setFlightDurationSeconds(requestDto.flightDurationSeconds());
 
         Location location = locationService.getLocationById(requestDto.locationId());
         droneOperation.setLocation(location);
@@ -83,33 +81,26 @@ public class DroneOperationController {
     public ResponseEntity<DroneOperation> update(
             @PathVariable String projectCode,
             @PathVariable String operationCode,
-            @RequestBody DroneOperation request
+            @RequestBody DroneOperationRequestDto requestDto
     ) {
         Project project = projectService.getProjectByCode(projectCode);
         DroneOperation existing = droneOperationService.getByCode(operationCode);
 
         validateOperationBelongsToProject(existing, project);
 
-        existing.setCode(request.getCode());
-        existing.setName(request.getName());
-        existing.setObjective(request.getObjective());
-        existing.setOperationDate(request.getOperationDate());
-        existing.setDescription(request.getDescription());
-        existing.setLocation(request.getLocation());
-        existing.setDrone(request.getDrone());
-        existing.setFlightMode(request.getFlightMode());
-        existing.setWeatherDescription(request.getWeatherDescription());
-        existing.setKpIndex(request.getKpIndex());
-        existing.setTakeoffTime(request.getTakeoffTime());
-        existing.setLandingTime(request.getLandingTime());
-        existing.setFlightLength(request.getFlightLength());
-        existing.setFlightDuration(request.getFlightDuration());
-        existing.setAvgRecordingAltitude(request.getAvgRecordingAltitude());
-        existing.setRecordingLength(request.getRecordingLength());
-        existing.setRecordingStart(request.getRecordingStart());
-        existing.setRecordingEnd(request.getRecordingEnd());
-        existing.setNumberOfRecordings(request.getNumberOfRecordings());
-        existing.setProject(project);
+        existing.setName(requestDto.name());
+        existing.setObjective(requestDto.objective());
+        existing.setDate(requestDto.date());
+        existing.setDescription(requestDto.description());
+        existing.setLocation(requestDto.locationId() != null ? locationService.getLocationById(requestDto.locationId()) : null);
+        existing.setDrone(requestDto.drone());
+        existing.setFlightMode(requestDto.flightMode());
+        existing.setWeatherDescription(requestDto.weatherDescription());
+        existing.setKpIndex(requestDto.kpIndex());
+        existing.setTakeoffTime(requestDto.takeoffTime());
+        existing.setLandingTime(requestDto.landingTime());
+        existing.setFlightLength(requestDto.flightLength());
+        existing.setFlightDurationSeconds(requestDto.flightDurationSeconds());
 
         droneOperationService.save(existing);
 

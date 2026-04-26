@@ -32,8 +32,8 @@ public class DroneOperation extends BaseEntity {
     @Column(name = "objective", columnDefinition = "TEXT")
     private String objective;
 
-    @Column(name = "operation_date")
-    private LocalDate operationDate;
+    @Column(name = "date")
+    private LocalDate date;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -64,7 +64,7 @@ public class DroneOperation extends BaseEntity {
     private Double flightLength = 0.0;
 
     @Column(name = "flight_duration_seconds", columnDefinition = "interval")
-    private Duration flightDuration;
+    private Integer flightDurationSeconds = 0;
 
     @Column(name = "avg_recording_altitude", nullable = false)
     private Double avgRecordingAltitude = 0.0;

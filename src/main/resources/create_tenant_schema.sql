@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS drone_operations (
     name VARCHAR(255) NOT NULL,
     project_id UUID NOT NULL,
     objective TEXT,
-    operation_date DATE,
+    date DATE,
     description TEXT,
     location_id UUID,
     drone VARCHAR(255) NOT NULL,
