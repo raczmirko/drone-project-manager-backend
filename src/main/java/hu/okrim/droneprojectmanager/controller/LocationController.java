@@ -1,12 +1,15 @@
 package hu.okrim.droneprojectmanager.controller;
 
 import hu.okrim.droneprojectmanager.dto.LocationRequestDto;
+import hu.okrim.droneprojectmanager.dto.LocationResponseDto;
 import hu.okrim.droneprojectmanager.model.Location;
 import hu.okrim.droneprojectmanager.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -29,9 +32,25 @@ public class LocationController {
     }
 
     @PostMapping
-    public void createLocation(@RequestBody LocationRequestDto requestDto) {
-        Location location = new Location(requestDto.name(), requestDto.longitude(), requestDto.latitude());
+    public ResponseEntity<LocationResponseDto> createLocation(
+            @RequestBody LocationRequestDto requestDto
+    ) {
+        Location location = new Location(
+                requestDto.name(),
+                requestDto.longitude(),
+                requestDto.latitude()
+        );
+
         locationService.save(location);
+
+        LocationResponseDto response = new LocationResponseDto(
+                location.getId(),
+                location.getName(),
+                location.getLongitude(),
+                location.getLatitude()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{id}")
