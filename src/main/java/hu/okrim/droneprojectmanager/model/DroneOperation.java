@@ -58,13 +58,13 @@ public class DroneOperation extends BaseEntity {
     @Column(name = "kp_index")
     private Double kpIndex;
 
-    // -------- FLIGHT ANALYSIS FIELDS --------
-
     @Column(name = "takeoff_time")
     private LocalDateTime takeoffTime;
 
     @Column(name = "landing_time")
     private LocalDateTime landingTime;
+
+    // -------- FLIGHT ANALYSIS FIELDS --------
 
     @Column(name = "flight_length")
     private Double flightLength;
