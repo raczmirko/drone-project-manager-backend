@@ -1,6 +1,7 @@
 package hu.okrim.droneprojectmanager.controller;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
+import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import hu.okrim.droneprojectmanager.service.OperationImageMetadataService;
@@ -56,5 +57,17 @@ public class OperationImageMetadataController {
     @PostMapping("/analyze")
     public OperationFlightAnalysisResponse analyze(@PathVariable String operationCode) {
         return operationImageMetadataService.analyzeAndUpdateOperation(operationCode);
+    }
+
+    /**
+     * Get the flight path of the operation by extracting the GPS coordinates from all images.
+     * @param operationCode The code of the operation.
+     * @return The flight path of the operation.
+     */
+    @GetMapping("/flight-path")
+    public List<OperationFlightPathPointResponseDto> getFlightPath(
+            @PathVariable String operationCode
+    ) {
+        return operationImageMetadataService.getFlightPath(operationCode);
     }
 }

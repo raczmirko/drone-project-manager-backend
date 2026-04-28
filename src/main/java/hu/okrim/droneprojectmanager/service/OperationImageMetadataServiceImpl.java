@@ -1,6 +1,7 @@
 package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
+import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import hu.okrim.droneprojectmanager.mapper.OperationImageMetadataMapper;
@@ -146,6 +147,21 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
         return OperationImageMetadataMapper.toFlightAnalysisResponse(operation);
     }
 
+    @Transactional(readOnly = true)
+    public List<OperationFlightPathPointResponseDto> getFlightPath(String operationCode) {
+        return imageMetadataRepository
+                .findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode)
+                .stream()
+                .filter(row -> row.getGpsLatitude() != null && row.getGpsLongitude() != null)
+                .map(row -> new OperationFlightPathPointResponseDto(
+                        row.getId(),
+                        row.getCapturedAt(),
+                        row.getGpsLatitude(),
+                        row.getGpsLongitude()
+                ))
+                .toList();
+    }
+
     /**
      * Get the drone operation by code.
      * @param operationCode The code of the drone operation.
@@ -186,6 +202,11 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
         return total == 0.0 ? null : total;
     }
 
+    /**
+     * Checks if the given row has GPS coordinates.
+     * @param row The row to check.
+     * @return True if the row has GPS coordinates, false otherwise.
+     */
     private boolean hasGps(DroneOperationImageMetadata row) {
         return row.getGpsLatitude() != null && row.getGpsLongitude() != null;
     }

@@ -1,6 +1,7 @@
 package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
+import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import org.springframework.data.domain.Page;
@@ -36,4 +37,11 @@ public interface OperationImageMetadataService {
      * @return The updated operation's flight analysis.
      */
     OperationFlightAnalysisResponse analyzeAndUpdateOperation(String operationCode);
+
+    /**
+     * Get the flight path of the operation by extracting the GPS coordinates from all images.
+     * @param operationCode The code of the operation.
+     * @return The flight path of the operation.
+     */
+    List<OperationFlightPathPointResponseDto> getFlightPath(String operationCode);
 }
