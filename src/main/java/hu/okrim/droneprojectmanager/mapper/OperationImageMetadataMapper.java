@@ -20,23 +20,26 @@ public class OperationImageMetadataMapper {
      * @return an OperationImageMetadataListItemResponse object containing the mapped data
      */
     public OperationImageMetadataListItemResponse toListItemResponse(DroneOperationImageMetadata entity) {
-        return OperationImageMetadataListItemResponse.builder()
-                .id(entity.getId())
-                .originalFilename(entity.getOriginalFilename())
-                .mimeType(entity.getMimeType())
-                .fileSizeBytes(entity.getFileSizeBytes())
-                .imageWidth(entity.getImageWidth())
-                .imageHeight(entity.getImageHeight())
-                .capturedAt(entity.getCapturedAt())
-                .gpsLatitude(entity.getGpsLatitude())
-                .gpsLongitude(entity.getGpsLongitude())
-                .gpsAltitude(entity.getGpsAltitude())
-                .cameraMake(entity.getCameraMake())
-                .cameraModel(entity.getCameraModel())
-                .metadataStatus(entity.getMetadataStatus())
-                .metadataError(entity.getMetadataError())
-                .createdAt(entity.getCreatedAt())
-                .build();
+        return new OperationImageMetadataListItemResponse(
+                entity.getId(),
+                entity.getOriginalFilename(),
+                entity.getMimeType(),
+                entity.getFileSizeBytes(),
+                entity.getImageWidth(),
+                entity.getImageHeight(),
+                entity.getCapturedAt(),
+                entity.getGpsLatitude(),
+                entity.getGpsLongitude(),
+                entity.getGpsAltitude(),
+                entity.getCameraMake(),
+                entity.getCameraModel(),
+                entity.getOrientation(),
+                entity.getFocalLength(),
+                entity.getIsoValue(),
+                entity.getAperture(),
+                entity.getExposureTime(),
+                entity.getCreatedAt()
+        );
     }
 
     /**

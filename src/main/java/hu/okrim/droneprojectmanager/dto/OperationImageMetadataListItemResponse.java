@@ -11,22 +11,24 @@ import java.util.UUID;
 /**
  * Response DTO for image metadata list item.
  */
-@Value
-@Builder
-public class OperationImageMetadataListItemResponse {
-    UUID id;
-    String originalFilename;
-    String mimeType;
-    Long fileSizeBytes;
-    Integer imageWidth;
-    Integer imageHeight;
-    LocalDateTime capturedAt;
-    Double gpsLatitude;
-    Double gpsLongitude;
-    Double gpsAltitude;
-    String cameraMake;
-    String cameraModel;
-    OperationImageMetadataStatus metadataStatus;
-    String metadataError;
-    Instant createdAt;
+public record OperationImageMetadataListItemResponse(
+        UUID id,
+        String originalFilename,
+        String mimeType,
+        Long fileSizeBytes,
+        Integer imageWidth,
+        Integer imageHeight,
+        LocalDateTime capturedAt,
+        Double gpsLatitude,
+        Double gpsLongitude,
+        Double gpsAltitude,
+        String cameraMake,
+        String cameraModel,
+        Integer orientation,
+        Double focalLength,
+        Integer isoValue,
+        Double aperture,
+        String exposureTime,
+        Instant createdAt
+) {
 }
