@@ -51,7 +51,8 @@ public class ProjectController {
     @PutMapping("/{projectCode}")
     public void updateProject(
             @PathVariable String projectCode,
-            @RequestBody ProjectRequestDto projectRequestDto) {
+            @RequestBody ProjectRequestDto projectRequestDto)
+    {
         Project project = projectService.getProjectByCode(projectCode);
         project.setName(projectRequestDto.name());
         project.setStatus(projectRequestDto.status());
