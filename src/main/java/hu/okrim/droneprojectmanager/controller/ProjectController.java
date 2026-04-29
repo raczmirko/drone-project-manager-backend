@@ -48,6 +48,20 @@ public class ProjectController {
         projectService.saveProject(project);
     }
 
+    @PutMapping("/{projectCode}")
+    public void updateProject(
+            @PathVariable String projectCode,
+            @RequestBody ProjectRequestDto projectRequestDto) {
+        Project project = projectService.getProjectByCode(projectCode);
+        project.setName(projectRequestDto.name());
+        project.setStatus(projectRequestDto.status());
+        project.setDescription(projectRequestDto.description());
+        project.setObjective(projectRequestDto.objective());
+        project.setStartDate(projectRequestDto.startDate());
+        project.setEndDate(projectRequestDto.endDate());
+        projectService.saveProject(project);
+    }
+
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteProject(@PathVariable String code) {
         Project project = projectService.getProjectByCode(code);
