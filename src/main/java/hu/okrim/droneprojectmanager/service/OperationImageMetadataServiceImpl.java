@@ -1,14 +1,11 @@
 package hu.okrim.droneprojectmanager.service;
 
-import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
-import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
+import hu.okrim.droneprojectmanager.dto.*;
 import hu.okrim.droneprojectmanager.mapper.OperationImageMetadataMapper;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
-import hu.okrim.droneprojectmanager.model.DroneOperationImageMetadata;
+import hu.okrim.droneprojectmanager.model.OperationImageMetadata;
 import hu.okrim.droneprojectmanager.model.OperationImageMetadataStatus;
-import hu.okrim.droneprojectmanager.repository.DroneOperationImageMetadataRepository;
+import hu.okrim.droneprojectmanager.repository.OperationImageMetadataRepository;
 import hu.okrim.droneprojectmanager.repository.DroneOperationRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,7 +31,7 @@ import java.util.List;
 public class OperationImageMetadataServiceImpl implements OperationImageMetadataService {
 
     private final DroneOperationRepository droneOperationRepository;
-    private final DroneOperationImageMetadataRepository imageMetadataRepository;
+    private final OperationImageMetadataRepository imageMetadataRepository;
     private final ImageMetadataExtractorService imageMetadataExtractorService;
 
     @Override
@@ -53,7 +51,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                     .build();
         }
 
-        List<DroneOperationImageMetadata> entities = new ArrayList<>();
+        List<OperationImageMetadata> entities = new ArrayList<>();
         for (MultipartFile file : safeFiles) {
             entities.add(imageMetadataExtractorService.extract(operation, file));
         }
@@ -103,7 +101,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
     public OperationFlightAnalysisResponse analyzeAndUpdateOperation(String operationCode) {
         DroneOperation operation = getOperation(operationCode);
 
-        List<DroneOperationImageMetadata> rows = imageMetadataRepository
+        List<OperationImageMetadata> rows = imageMetadataRepository
                 .findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode)
                 .stream()
                 .filter(row -> row.getMetadataStatus() == OperationImageMetadataStatus.EXTRACTED)
@@ -112,19 +110,19 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
         operation.setNumberOfRecordings(rows.size());
 
         LocalDateTime recordingStart = rows.stream()
-                .map(DroneOperationImageMetadata::getCapturedAt)
+                .map(OperationImageMetadata::getCapturedAt)
                 .filter(value -> value != null)
                 .min(LocalDateTime::compareTo)
                 .orElse(null);
 
         LocalDateTime recordingEnd = rows.stream()
-                .map(DroneOperationImageMetadata::getCapturedAt)
+                .map(OperationImageMetadata::getCapturedAt)
                 .filter(value -> value != null)
                 .max(LocalDateTime::compareTo)
                 .orElse(null);
 
         Double avgAltitude = rows.stream()
-                .map(DroneOperationImageMetadata::getGpsAltitude)
+                .map(OperationImageMetadata::getGpsAltitude)
                 .filter(value -> value != null)
                 .mapToDouble(Double::doubleValue)
                 .average()
@@ -163,6 +161,187 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
     }
 
     /**
+     * Get the dashboard data for a specific operation.
+     * @param operationCode The code of the operation.
+     * @return The dashboard data for the operation.
+     */
+    public OperationImageMetadataDashboardResponse getDashboard(String operationCode) {
+        List<OperationImageMetadata> metadata = imageMetadataRepository.findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode);
+
+        List<OperationImageMetadata> sorted = metadata.stream()
+                .sorted(
+                        Comparator.comparing(
+                                        OperationImageMetadata::getCapturedAt,
+                                        Comparator.nullsLast(LocalDateTime::compareTo)
+                                )
+                                .thenComparing(OperationImageMetadata::getCreatedAt)
+                )
+                .toList();
+
+        List<OperationImageMetadataDashboardResponse.AltitudeProfilePointDto> altitudeProfile = buildAltitudeProfile(sorted);
+
+        List<OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto> altitudeDistribution = buildAltitudeDistribution(sorted);
+
+        List<OperationImageMetadataDashboardResponse.DistanceAltitudePointDto> distanceAltitudeProfile = buildDistanceAltitudeProfile(sorted);
+
+        List<OperationImageMetadataDashboardResponse.GroundTrackPointDto> groundTrack = buildGroundTrack(sorted);
+
+        return new OperationImageMetadataDashboardResponse(
+                altitudeProfile,
+                altitudeDistribution,
+                distanceAltitudeProfile,
+                groundTrack
+        );
+    }
+
+    /**
+     * Builds an altitude profile based on the provided list of operation image metadata.
+     *
+     * @param sorted a list of OperationImageMetadata objects sorted by capture time
+     * @return a list of AltitudeProfilePointDto objects representing the altitude profile
+     */
+    private List<OperationImageMetadataDashboardResponse.AltitudeProfilePointDto> buildAltitudeProfile(
+            List<OperationImageMetadata> sorted
+    ) {
+        List<OperationImageMetadataDashboardResponse.AltitudeProfilePointDto> result = new ArrayList<>();
+        int sequence = 1;
+
+        for (OperationImageMetadata item : sorted) {
+            if (item.getGpsAltitude() == null) {
+                continue;
+            }
+
+            result.add(new OperationImageMetadataDashboardResponse.AltitudeProfilePointDto(
+                    sequence++,
+                    item.getCapturedAt(),
+                    item.getGpsAltitude()
+            ));
+        }
+
+        return result;
+    }
+
+    /**
+     * Builds a distribution of altitude ranges based on a sorted list of operation image metadata.
+     * Each range is represented as a bucket with a label and count of occurrences.
+     *
+     * @param sorted the list of OperationImageMetadata objects sorted by their respective attributes
+     * @return a list of AltitudeDistributionBucketDto instances, each representing a range of altitude values and the number of occurrences in that range
+     */
+    private List<OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto> buildAltitudeDistribution(
+            List<OperationImageMetadata> sorted
+    ) {
+        long below20 = 0;
+        long from20To40 = 0;
+        long from40To60 = 0;
+        long from60To80 = 0;
+        long from80To100 = 0;
+        long above100 = 0;
+
+        for (OperationImageMetadata item : sorted) {
+            Double altitude = item.getGpsAltitude();
+            if (altitude == null) {
+                continue;
+            }
+
+            if (altitude < 20) {
+                below20++;
+            } else if (altitude < 40) {
+                from20To40++;
+            } else if (altitude < 60) {
+                from40To60++;
+            } else if (altitude < 80) {
+                from60To80++;
+            } else if (altitude < 100) {
+                from80To100++;
+            } else {
+                above100++;
+            }
+        }
+
+        return List.of(
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("< 20 m", below20),
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("20–40 m", from20To40),
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("40–60 m", from40To60),
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("60–80 m", from60To80),
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("80–100 m", from80To100),
+                new OperationImageMetadataDashboardResponse.AltitudeDistributionBucketDto("100+ m", above100)
+        );
+    }
+
+    /**
+     * Builds a distance-altitude profile based on a sorted list of OperationImageMetadata.
+     * Each point in the profile consists of cumulative distance and corresponding altitude.
+     *
+     * @param sorted a list of sorted OperationImageMetadata objects containing GPS coordinates and altitude data.
+     * @return a list of DistanceAltitudePointDto objects representing the distance-altitude profile.
+     */
+    private List<OperationImageMetadataDashboardResponse.DistanceAltitudePointDto> buildDistanceAltitudeProfile(
+            List<OperationImageMetadata> sorted
+    ) {
+        List<OperationImageMetadataDashboardResponse.DistanceAltitudePointDto> result = new ArrayList<>();
+        OperationImageMetadata previous = null;
+        double cumulativeDistanceMeters = 0.0;
+
+        for (OperationImageMetadata item : sorted) {
+            if (item.getGpsLatitude() == null || item.getGpsLongitude() == null || item.getGpsAltitude() == null) {
+                continue;
+            }
+
+            if (previous != null
+                    && previous.getGpsLatitude() != null
+                    && previous.getGpsLongitude() != null) {
+                cumulativeDistanceMeters += haversineMeters(
+                        previous.getGpsLatitude(),
+                        previous.getGpsLongitude(),
+                        item.getGpsLatitude(),
+                        item.getGpsLongitude()
+                );
+            }
+
+            result.add(new OperationImageMetadataDashboardResponse.DistanceAltitudePointDto(
+                    cumulativeDistanceMeters,
+                    item.getGpsAltitude()
+            ));
+
+            previous = item;
+        }
+
+        return result;
+    }
+
+    /**
+     * Builds a list of GroundTrackPointDto objects representing the ground track points based on sorted operation image metadata.
+     * Each ground track point includes a sequence number, timestamp, GPS latitude, GPS longitude, and GPS altitude,
+     * skipping entries where latitude or longitude is null.
+     *
+     * @param sortedMetadataList the list of sorted operation image metadata to process, where each item contains GPS and timestamp information
+     * @return a list of GroundTrackPointDto objects representing the ground track points
+     */
+    private List<OperationImageMetadataDashboardResponse.GroundTrackPointDto> buildGroundTrack(
+            List<OperationImageMetadata> sortedMetadataList
+    ) {
+        List<OperationImageMetadataDashboardResponse.GroundTrackPointDto> result = new ArrayList<>();
+        int sequence = 1;
+
+        for (OperationImageMetadata item : sortedMetadataList) {
+            if (item.getGpsLatitude() == null || item.getGpsLongitude() == null) {
+                continue;
+            }
+
+            result.add(new OperationImageMetadataDashboardResponse.GroundTrackPointDto(
+                    sequence++,
+                    item.getCapturedAt(),
+                    item.getGpsLatitude(),
+                    item.getGpsLongitude(),
+                    item.getGpsAltitude()
+            ));
+        }
+
+        return result;
+    }
+
+    /**
      * Get the drone operation by code.
      * @param operationCode The code of the drone operation.
      * @return The drone operation.
@@ -177,11 +356,11 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
      * @param rows The list of image metadata rows.
      * @return The cumulative distance in meters, or null if no GPS points are present.
      */
-    private Double calculateCumulativeDistanceMeters(List<DroneOperationImageMetadata> rows) {
+    private Double calculateCumulativeDistanceMeters(List<OperationImageMetadata> rows) {
         double total = 0.0;
-        DroneOperationImageMetadata previous = null;
+        OperationImageMetadata previous = null;
 
-        for (DroneOperationImageMetadata current : rows) {
+        for (OperationImageMetadata current : rows) {
             if (previous == null) {
                 previous = current;
                 continue;
@@ -207,7 +386,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
      * @param row The row to check.
      * @return True if the row has GPS coordinates, false otherwise.
      */
-    private boolean hasGps(DroneOperationImageMetadata row) {
+    private boolean hasGps(OperationImageMetadata row) {
         return row.getGpsLatitude() != null && row.getGpsLongitude() != null;
     }
 

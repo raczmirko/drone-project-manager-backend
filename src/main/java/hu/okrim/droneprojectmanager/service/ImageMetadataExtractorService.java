@@ -1,7 +1,7 @@
 package hu.okrim.droneprojectmanager.service;
 
 import hu.okrim.droneprojectmanager.model.DroneOperation;
-import hu.okrim.droneprojectmanager.model.DroneOperationImageMetadata;
+import hu.okrim.droneprojectmanager.model.OperationImageMetadata;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -15,6 +15,6 @@ public interface ImageMetadataExtractorService {
      * @param file The image file to extract metadata from
      * @return The extracted image metadata
      */
-    DroneOperationImageMetadata extract(DroneOperation operation, MultipartFile file);
+    OperationImageMetadata extract(DroneOperation operation, MultipartFile file);
 
 }

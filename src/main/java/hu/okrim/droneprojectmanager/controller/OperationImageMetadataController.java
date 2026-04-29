@@ -1,9 +1,6 @@
 package hu.okrim.droneprojectmanager.controller;
 
-import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
-import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
+import hu.okrim.droneprojectmanager.dto.*;
 import hu.okrim.droneprojectmanager.service.OperationImageMetadataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,5 +66,17 @@ public class OperationImageMetadataController {
             @PathVariable String operationCode
     ) {
         return operationImageMetadataService.getFlightPath(operationCode);
+    }
+
+    /**
+     * Get the dashboard data for the operation.
+     * @param operationCode The code of the operation.
+     * @return The dashboard data for the operation.
+     */
+    @GetMapping("/dashboard")
+    public OperationImageMetadataDashboardResponse getImageMetadataDashboard(
+            @PathVariable String operationCode
+    ) {
+        return operationImageMetadataService.getDashboard(operationCode);
     }
 }

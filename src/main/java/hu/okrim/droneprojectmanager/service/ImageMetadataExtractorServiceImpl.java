@@ -7,7 +7,7 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.GpsDirectory;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
-import hu.okrim.droneprojectmanager.model.DroneOperationImageMetadata;
+import hu.okrim.droneprojectmanager.model.OperationImageMetadata;
 import hu.okrim.droneprojectmanager.model.OperationImageMetadataStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -35,8 +35,8 @@ public class ImageMetadataExtractorServiceImpl implements ImageMetadataExtractor
      * @return The extracted image metadata
      */
     @Override
-    public DroneOperationImageMetadata extract(DroneOperation operation, MultipartFile file) {
-        DroneOperationImageMetadata.DroneOperationImageMetadataBuilder builder = DroneOperationImageMetadata.builder()
+    public OperationImageMetadata extract(DroneOperation operation, MultipartFile file) {
+        OperationImageMetadata.OperationImageMetadataBuilder builder = OperationImageMetadata.builder()
                 .operation(operation)
                 .originalFilename(StringUtils.cleanPath(Optional.ofNullable(file.getOriginalFilename()).orElse("unknown-file")))
                 .mimeType(file.getContentType())

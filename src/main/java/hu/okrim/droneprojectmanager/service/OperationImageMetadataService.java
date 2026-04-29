@@ -1,9 +1,6 @@
 package hu.okrim.droneprojectmanager.service;
 
-import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
-import hu.okrim.droneprojectmanager.dto.OperationFlightPathPointResponseDto;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataExtractionResponse;
-import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
+import hu.okrim.droneprojectmanager.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,4 +41,11 @@ public interface OperationImageMetadataService {
      * @return The flight path of the operation.
      */
     List<OperationFlightPathPointResponseDto> getFlightPath(String operationCode);
+
+    /**
+     * Get the dashboard data for the operation.
+     * @param operationCode The code of the operation.
+     * @return The dashboard data for the operation.
+     */
+    OperationImageMetadataDashboardResponse getDashboard(String operationCode);
 }

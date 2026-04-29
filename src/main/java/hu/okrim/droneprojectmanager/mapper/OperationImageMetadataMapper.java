@@ -3,9 +3,8 @@ package hu.okrim.droneprojectmanager.mapper;
 import hu.okrim.droneprojectmanager.dto.OperationFlightAnalysisResponse;
 import hu.okrim.droneprojectmanager.dto.OperationImageMetadataListItemResponse;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
-import hu.okrim.droneprojectmanager.model.DroneOperationImageMetadata;
+import hu.okrim.droneprojectmanager.model.OperationImageMetadata;
 import lombok.experimental.UtilityClass;
-import org.springframework.data.domain.Page;
 
 /**
  * Mapper class for mapping between entity and response objects.
@@ -19,7 +18,7 @@ public class OperationImageMetadataMapper {
      * @param entity the DroneOperationImageMetadata entity to be transformed
      * @return an OperationImageMetadataListItemResponse object containing the mapped data
      */
-    public OperationImageMetadataListItemResponse toListItemResponse(DroneOperationImageMetadata entity) {
+    public OperationImageMetadataListItemResponse toListItemResponse(OperationImageMetadata entity) {
         return new OperationImageMetadataListItemResponse(
                 entity.getId(),
                 entity.getOriginalFilename(),
