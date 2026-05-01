@@ -146,6 +146,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<OperationFlightPathPointResponseDto> getFlightPath(String operationCode) {
         return imageMetadataRepository
                 .findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode)
@@ -165,6 +166,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
      * @param operationCode The code of the operation.
      * @return The dashboard data for the operation.
      */
+    @Override
     public OperationImageMetadataDashboardResponse getDashboard(String operationCode) {
         List<OperationImageMetadata> metadata = imageMetadataRepository.findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode);
 
@@ -192,6 +194,12 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 distanceAltitudeProfile,
                 groundTrack
         );
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllOperationMetadata(String operationCode) {
+        imageMetadataRepository.deleteByOperationCode(operationCode);
     }
 
     /**

@@ -25,5 +25,9 @@ public interface OperationImageMetadataRepository extends JpaRepository<Operatio
 
     long countByOperationCode(String operationCode);
 
+    /**
+     * Delete all drone operation image metadata by operation code.
+     * @param operationCode The operation code.
+     */
     void deleteByOperationCode(String operationCode);
 }

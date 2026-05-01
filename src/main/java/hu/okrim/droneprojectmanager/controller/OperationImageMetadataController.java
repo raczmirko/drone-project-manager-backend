@@ -3,9 +3,11 @@ package hu.okrim.droneprojectmanager.controller;
 import hu.okrim.droneprojectmanager.dto.*;
 import hu.okrim.droneprojectmanager.service.OperationImageMetadataService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,5 +80,16 @@ public class OperationImageMetadataController {
             @PathVariable String operationCode
     ) {
         return operationImageMetadataService.getDashboard(operationCode);
+    }
+
+    /**
+     * Delete all metadata for a specific operation.
+     * @param operationCode The code of the operation.
+     * @return A ResponseEntity indicating success.
+     */
+    @DeleteMapping("/purge")
+    public ResponseEntity<Void> purge(@PathVariable String operationCode) {
+        operationImageMetadataService.deleteAllOperationMetadata(operationCode);
+        return ResponseEntity.ok().build();
     }
 }

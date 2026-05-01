@@ -48,4 +48,10 @@ public interface OperationImageMetadataService {
      * @return The dashboard data for the operation.
      */
     OperationImageMetadataDashboardResponse getDashboard(String operationCode);
+
+    /**
+     * Delete all metadata for a specific operation.
+     * @param operationCode The code of the operation.
+     */
+    void deleteAllOperationMetadata(String operationCode);
 }
