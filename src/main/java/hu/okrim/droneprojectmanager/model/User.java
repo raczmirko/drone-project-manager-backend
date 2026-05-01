@@ -29,4 +29,7 @@ public class User {
 
     @Column(name = "registration_date", nullable = false, columnDefinition = "timestamp")
     private Instant registrationDate;
+
+    @Column(name = "last_login")
+    private Instant lastLogin;
 }

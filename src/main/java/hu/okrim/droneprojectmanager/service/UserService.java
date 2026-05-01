@@ -30,4 +30,11 @@ public interface UserService {
      */
     ApiResponse registerUser(UserRequestDto userRequestDto);
 
+    /**
+     * Updates the last login timestamp for the specified user.
+     *
+     * @param user the user whose last login timestamp should be updated
+     */
+    void updateLastLogin(User user);
+
 }

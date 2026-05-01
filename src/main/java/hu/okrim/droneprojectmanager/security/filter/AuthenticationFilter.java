@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.okrim.droneprojectmanager.dto.UserRequestDto;
 import hu.okrim.droneprojectmanager.model.User;
 import hu.okrim.droneprojectmanager.security.SecurityConstants;
+import hu.okrim.droneprojectmanager.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,8 +21,11 @@ import java.util.Date;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+    private final UserService userService;
+
+    public AuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         super.setAuthenticationManager(authenticationManager);
+        this.userService = userService;
     }
 
     @Override
@@ -59,6 +63,9 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     {
         // Retrieve the authenticated user from the Authentication object
         User user = (User) authResult.getPrincipal();
+
+        // Update last login timestamp
+        userService.updateLastLogin(user);
 
         // Generate JWT Token
         String token = JWT.create()

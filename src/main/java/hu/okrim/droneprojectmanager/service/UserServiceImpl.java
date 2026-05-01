@@ -66,6 +66,13 @@ public class UserServiceImpl implements UserService {
         return new ApiResponse(true, "Registration successful!", newUser);
     }
 
+    @Override
+    @Transactional
+    public void updateLastLogin(User user) {
+        user.setLastLogin(Instant.now());
+        userRepository.save(user);
+    }
+
     /**
      * Creates a new tenant-specific schema in the database and initializes it by executing
      * the create_tenant_schema.sql script. This is used when registering a new user.
