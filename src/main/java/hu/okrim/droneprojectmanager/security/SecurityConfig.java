@@ -5,6 +5,8 @@ import hu.okrim.droneprojectmanager.security.filter.AuthenticationFilter;
 import hu.okrim.droneprojectmanager.security.filter.ExceptionHandlerFilter;
 import hu.okrim.droneprojectmanager.security.filter.JWTAuthorizationFilter;
 import hu.okrim.droneprojectmanager.security.manager.CustomAuthenticationManager;
+import hu.okrim.droneprojectmanager.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,17 +22,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    CustomAuthenticationManager customAuthenticationManager;
-
-    @Autowired
-    private TenantFilter tenantFilter;
+    private final CustomAuthenticationManager customAuthenticationManager;
+    private final TenantFilter tenantFilter;
+    private final UserService userService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager);
+        AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager, userService);
         authenticationFilter.setFilterProcessesUrl("/authenticate");
         http
                 .csrf(AbstractHttpConfigurer::disable)
