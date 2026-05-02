@@ -2,7 +2,13 @@ CREATE TABLE IF NOT EXISTS locations (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     gps_longitude DOUBLE PRECISION NOT NULL,
-    gps_latitude DOUBLE PRECISION NOT NULL
+    gps_latitude DOUBLE PRECISION NOT NULL,
+
+    CONSTRAINT chk_location_latitude
+        CHECK (gps_latitude IS NULL OR (gps_latitude >= -90 AND gps_latitude <= 90)),
+
+    CONSTRAINT chk_location_longitude
+        CHECK (gps_longitude IS NULL OR (gps_longitude >= -180 AND gps_longitude <= 180))
 );
 
 CREATE TABLE IF NOT EXISTS projects (
