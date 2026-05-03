@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS projects (
     end_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT chk_project_dates CHECK (start_date < end_date)
+    CONSTRAINT chk_project_dates CHECK (start_date <= end_date)
 );
 
 CREATE TABLE IF NOT EXISTS project_files (
