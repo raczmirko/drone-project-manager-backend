@@ -403,7 +403,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
      * using the Haversine formula.
      * <p>
      * Reference:
-     * <a href="https://en.wikipedia.org/wiki/Haversine_formula">Haversine formula</a>
+     * <a href="https://www.geeksforgeeks.org/dsa/haversine-formula-to-find-distance-between-two-points-on-a-sphere/">Haversine formula</a>
      */
     private double haversineMeters(double lat1, double lon1, double lat2, double lon2) {
         double earthRadiusMeters = 6_371_000.0;
