@@ -16,7 +16,7 @@ public class UserController {
 
     /**
      * Generate a new account number.
-     * @return
+     * @return The generated account number as a string.
      */
     @GetMapping("/generate-account-number")
     public String generateAccountNumber() {
