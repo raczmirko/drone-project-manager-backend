@@ -14,11 +14,20 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Generate a new account number.
+     * @return
+     */
     @GetMapping("/generate-account-number")
     public String generateAccountNumber() {
         return userService.generateAccountNumber().toString();
     }
 
+    /**
+     * Register a new user.
+     * @param userRequestDto The user data.
+     * @return A ResponseEntity indicating success or failure.
+     */
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register(@RequestBody UserRequestDto userRequestDto) {
         ApiResponse response = userService.registerUser(userRequestDto);

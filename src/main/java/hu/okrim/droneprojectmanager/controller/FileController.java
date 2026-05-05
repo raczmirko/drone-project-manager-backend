@@ -10,6 +10,7 @@ import hu.okrim.droneprojectmanager.service.DroneOperationService;
 import hu.okrim.droneprojectmanager.service.ProjectFileService;
 import hu.okrim.droneprojectmanager.service.ProjectService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class FileController {
@@ -35,6 +37,12 @@ public class FileController {
 
     // ------------------- Project Files ---------------------
 
+    /**
+     * Get all files for a project.
+     * @param projectCode The project code.
+     * @param pageable The pagination information.
+     * @return A page of files.
+     */
     @GetMapping("/projects/{projectCode}/files")
     public Page<FileResponseDto> getProjectFiles(
             @PathVariable String projectCode,
@@ -54,6 +62,13 @@ public class FileController {
         ));
     }
 
+    /**
+     * Upload a file for a project.
+     * @param projectCode The project code.
+     * @param file The file to upload.
+     * @return A ResponseEntity indicating success.
+     * @throws IOException If an I/O error occurs during file upload.
+     */
     @PostMapping("/projects/{projectCode}/files")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> uploadProjectFile(
@@ -63,11 +78,13 @@ public class FileController {
         Project project = projectService.getProjectByCode(projectCode);
 
         if (file.isEmpty()) {
+            log.error("Uploaded file is empty.");
             throw new IllegalArgumentException("Uploaded file is empty.");
         }
 
         // Throw an error if the file size exceeds 300MB
         if (file.getSize() > 300_000_000) {
+            log.error("Uploaded file is too large. Maximum size is 300MB.");
             throw new IllegalArgumentException("Uploaded file is too large. Maximum size is 300MB.");
         }
 
@@ -84,17 +101,27 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Delete a file for a project.
+     * @param documentId The ID of the file to delete.
+     */
     @DeleteMapping("/project-files/{documentId}")
     public void deleteProjectFile(@PathVariable UUID documentId) {
         projectFileService.deleteProjectFile(projectFileService.getProjectFileById(documentId));
     }
 
+    /**
+     * Download a file for a project.
+     * @param documentId The ID of the file to download.
+     * @return A ResponseEntity containing the file content.
+     */
     @GetMapping("/project-files/{documentId}")
     public ResponseEntity<byte[]> downloadProjectFile(@PathVariable UUID documentId) {
 
         ProjectFile projectFile = projectFileService.getProjectFileById(documentId);
 
         if (projectFile == null) {
+            log.error("Project file not found.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -102,6 +129,7 @@ public class FileController {
         byte[] fileContent = projectFile.getBinaryContent();
 
         if (fileContent == null || fileName == null) {
+            log.error("Missing content or filename for project file.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Handle missing content or filename
         }
 
@@ -129,6 +157,12 @@ public class FileController {
 
     // ------------------- Operation Files ---------------------
 
+    /**
+     * Get all files for a drone operation.
+     * @param operationCode The operation code.
+     * @param pageable The pagination information.
+     * @return A page of files.
+     */
     @GetMapping("/operations/{operationCode}/files")
     public Page<FileResponseDto> getOperationFiles(
             @PathVariable String operationCode,
@@ -137,6 +171,7 @@ public class FileController {
         DroneOperation operation = droneOperationService.getByCode(operationCode);
 
         if (operation == null) {
+            log.error("Drone operation not found.");
             throw new IllegalArgumentException("Drone operation not found.");
         }
 
@@ -151,6 +186,13 @@ public class FileController {
         ));
     }
 
+    /**
+     * Upload a file for a drone operation.
+     * @param operationCode The operation code.
+     * @param file The file to upload.
+     * @return A ResponseEntity indicating success.
+     * @throws IOException If an I/O error occurs during file upload.
+     */
     @PostMapping("/operations/{operationCode}/files")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> uploadOperationFile(
@@ -160,11 +202,13 @@ public class FileController {
         DroneOperation operation = droneOperationService.getByCode(operationCode);
 
         if (file.isEmpty()) {
+            log.error("Uploaded file is empty.");
             throw new IllegalArgumentException("Uploaded file is empty.");
         }
 
         // Throw an error if the file size exceeds 300MB
         if (file.getSize() > 300_000_000) {
+            log.error("Uploaded file is too large. Maximum size is 300MB.");
             throw new IllegalArgumentException("Uploaded file is too large. Maximum size is 300MB.");
         }
 
@@ -181,17 +225,27 @@ public class FileController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Delete a file for a drone operation.
+     * @param documentId The ID of the file to delete.
+     */
     @DeleteMapping("/operation-files/{documentId}")
     public void deleteOperationFile(@PathVariable UUID documentId) {
         droneOperationFileService.deleteDroneOperationFile(droneOperationFileService.getDroneOperationFileById(documentId));
     }
 
+    /**
+     * Download a file for a drone operation.
+     * @param documentId The ID of the file to download.
+     * @return A ResponseEntity containing the file content.
+     */
     @GetMapping("/operation-files/{documentId}")
     public ResponseEntity<byte[]> downloadOperationFile(@PathVariable UUID documentId) {
 
         DroneOperationFile droneOperationFile = droneOperationFileService.getDroneOperationFileById(documentId);
 
         if (droneOperationFile == null) {
+            log.error("Drone operation file not found.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -199,6 +253,7 @@ public class FileController {
         byte[] fileContent = droneOperationFile.getBinaryContent();
 
         if (fileContent == null || fileName == null) {
+            log.error("Missing content or filename for drone operation file.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Handle missing content or filename
         }
 

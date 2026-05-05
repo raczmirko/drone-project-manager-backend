@@ -30,11 +30,20 @@ public class ProjectController {
         return projectService.getAllProjects(pageable);
     }
 
+    /**
+     * Endpoint to fetch a project by its code.
+     * @param projectCode The code of the project.
+     * @return The project wrapped in a ResponseEntity.
+     */
     @GetMapping("/{projectCode}")
     public Project getProjectByCode(@PathVariable String projectCode) {
         return projectService.getProjectByCode(projectCode);
     }
 
+    /**
+     * Endpoint to create a new project.
+     * @param projectRequestDto The project data.
+     */
     @PostMapping
     public void createProject(@RequestBody ProjectRequestDto projectRequestDto) {
         Project project = new Project();
@@ -48,6 +57,11 @@ public class ProjectController {
         projectService.saveProject(project);
     }
 
+    /**
+     * Endpoint to update an existing project.
+     * @param projectCode The code of the project to update.
+     * @param projectRequestDto The updated project data.
+     */
     @PutMapping("/{projectCode}")
     public void updateProject(
             @PathVariable String projectCode,
@@ -63,6 +77,11 @@ public class ProjectController {
         projectService.saveProject(project);
     }
 
+    /**
+     * Endpoint to delete a project by its code.
+     * @param code The code of the project to delete.
+     * @return 204 No Content
+     */
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteProject(@PathVariable String code) {
         Project project = projectService.getProjectByCode(code);

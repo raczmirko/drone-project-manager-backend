@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling drone operations.
+ */
 @RestController
 @RequestMapping("/projects/{projectCode}/operations")
 @RequiredArgsConstructor
@@ -24,6 +27,12 @@ public class DroneOperationController {
     private final ProjectService projectService;
     private final LocationService locationService;
 
+    /**
+     * Get all drone operations for a project.
+     * @param projectCode The project code.
+     * @param pageable The pagination information.
+     * @return A page of drone operations.
+     */
     @GetMapping
     public Page<DroneOperation> getAll(
             @PathVariable String projectCode,
@@ -33,6 +42,12 @@ public class DroneOperationController {
         return droneOperationService.getAll(project.getId(), pageable);
     }
 
+    /**
+     * Get a drone operation by its code.
+     * @param projectCode The project code.
+     * @param operationCode The operation code.
+     * @return The drone operation wrapped in a ResponseEntity.
+     */
     @GetMapping("/{operationCode}")
     public ResponseEntity<DroneOperation> getByCode(
             @PathVariable String projectCode,
@@ -46,6 +61,12 @@ public class DroneOperationController {
         return ResponseEntity.ok(droneOperation);
     }
 
+    /**
+     * Create a new drone operation.
+     * @param projectCode The project code.
+     * @param requestDto The request DTO containing the operation data.
+     * @return The created drone operation wrapped in a ResponseEntity.
+     */
     @PostMapping
     public ResponseEntity<DroneOperation> create(
             @PathVariable String projectCode,
@@ -76,6 +97,13 @@ public class DroneOperationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(droneOperation);
     }
 
+    /**
+     * Update an existing drone operation.
+     * @param projectCode The project code.
+     * @param operationCode The operation code.
+     * @param requestDto The request DTO containing the updated operation data.
+     * @return The updated drone operation wrapped in a ResponseEntity.
+     */
     @PutMapping("/{operationCode}")
     public ResponseEntity<DroneOperation> update(
             @PathVariable String projectCode,
@@ -105,6 +133,12 @@ public class DroneOperationController {
         return ResponseEntity.ok(existing);
     }
 
+    /**
+     * Delete a drone operation.
+     * @param projectCode The project code.
+     * @param operationCode The operation code.
+     * @return A ResponseEntity indicating success.
+     */
     @DeleteMapping("/{operationCode}")
     public ResponseEntity<Void> delete(
             @PathVariable String projectCode,
@@ -120,6 +154,11 @@ public class DroneOperationController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Validate that the given drone operation belongs to the specified project.
+     * @param droneOperation The drone operation to validate.
+     * @param project The project to check against.
+     */
     private void validateOperationBelongsToProject(DroneOperation droneOperation, Project project) {
         if (droneOperation.getProject() == null ||
                 !droneOperation.getProject().getId().equals(project.getId())) {

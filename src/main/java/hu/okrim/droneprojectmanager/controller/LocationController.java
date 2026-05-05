@@ -21,16 +21,31 @@ public class LocationController {
 
     private final LocationService locationService;
 
+    /**
+     * Get all locations.
+     * @param pageable The pagination information.
+     * @return A page of locations.
+     */
     @GetMapping
     public Page<Location> getAllLocations(@PageableDefault(size = 20) Pageable pageable) {
         return locationService.getAllLocations(pageable);
     }
 
+    /**
+     * Get a location by its id.
+     * @param id The id of the location.
+     * @return The location.
+     */
     @GetMapping("/{id}")
     public Location getLocation(@PathVariable UUID id) {
         return locationService.getLocationById(id);
     }
 
+    /**
+     * Create a new location.
+     * @param requestDto The location data.
+     * @return The created location.
+     */
     @PostMapping
     public ResponseEntity<LocationResponseDto> createLocation(
             @RequestBody LocationRequestDto requestDto
@@ -53,6 +68,10 @@ public class LocationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Delete a location by its id.
+     * @param id The id of the location.
+     */
     @DeleteMapping("/{id}")
     public void deleteLocation(@PathVariable UUID id) {
         locationService.delete(id);
