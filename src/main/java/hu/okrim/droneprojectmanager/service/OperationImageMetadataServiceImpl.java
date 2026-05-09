@@ -5,8 +5,8 @@ import hu.okrim.droneprojectmanager.mapper.OperationImageMetadataMapper;
 import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.model.OperationImageMetadata;
 import hu.okrim.droneprojectmanager.model.OperationImageMetadataStatus;
-import hu.okrim.droneprojectmanager.repository.OperationImageMetadataRepository;
 import hu.okrim.droneprojectmanager.repository.DroneOperationRepository;
+import hu.okrim.droneprojectmanager.repository.OperationImageMetadataRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,11 +44,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 .toList();
 
         if (safeFiles.isEmpty()) {
-            return OperationImageMetadataExtractionResponse.builder()
-                    .processedCount(0)
-                    .extractedCount(0)
-                    .errorCount(0)
-                    .build();
+            return new OperationImageMetadataExtractionResponse(0, 0, 0);
         }
 
         List<OperationImageMetadata> entities = new ArrayList<>();
@@ -62,11 +58,7 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 .filter(entity -> entity.getMetadataStatus() == OperationImageMetadataStatus.ERROR)
                 .count();
 
-        return OperationImageMetadataExtractionResponse.builder()
-                .processedCount(entities.size())
-                .extractedCount(entities.size() - errorCount)
-                .errorCount(errorCount)
-                .build();
+        return new OperationImageMetadataExtractionResponse(entities.size(), entities.size() - errorCount, errorCount);
     }
 
     /**

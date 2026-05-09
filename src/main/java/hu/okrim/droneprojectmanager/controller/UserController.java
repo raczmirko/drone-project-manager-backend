@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling user-related operations.
+ */
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor

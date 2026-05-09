@@ -25,6 +25,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Controller for handling file-related operations.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor

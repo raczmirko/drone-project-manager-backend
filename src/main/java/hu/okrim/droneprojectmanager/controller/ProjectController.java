@@ -11,6 +11,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling project operations.
+ */
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor

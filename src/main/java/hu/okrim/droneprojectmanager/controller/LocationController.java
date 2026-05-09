@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Controller for handling location operations.
+ */
 @RestController
 @RequestMapping("/locations")
 @RequiredArgsConstructor
