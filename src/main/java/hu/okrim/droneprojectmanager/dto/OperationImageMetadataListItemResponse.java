@@ -1,9 +1,5 @@
 package hu.okrim.droneprojectmanager.dto;
 
-import hu.okrim.droneprojectmanager.model.OperationImageMetadataStatus;
-import lombok.Builder;
-import lombok.Value;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
