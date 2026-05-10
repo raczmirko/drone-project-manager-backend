@@ -1,9 +1,7 @@
 package hu.okrim.droneprojectmanager.service;
 
-import hu.okrim.droneprojectmanager.model.DroneOperation;
 import hu.okrim.droneprojectmanager.model.DroneOperationFile;
 import hu.okrim.droneprojectmanager.repository.DroneOperationFileRepository;
-import hu.okrim.droneprojectmanager.repository.DroneOperationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

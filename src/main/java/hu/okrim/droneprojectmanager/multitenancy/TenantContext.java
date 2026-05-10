@@ -1,5 +1,7 @@
 package hu.okrim.droneprojectmanager.multitenancy;
 
+import lombok.NoArgsConstructor;
+
 /**
  * Represents a thread-local context for storing and managing the current tenant identifier.
  * <p>
@@ -22,11 +24,9 @@ package hu.okrim.droneprojectmanager.multitenancy;
  * - The usage of {@link ThreadLocal} ensures the tenant identifier is isolated to the
  *   current thread, preventing interference between concurrent threads.
  */
+@NoArgsConstructor
 public final class TenantContext {
     private static final ThreadLocal<String> CURRENT_TENANT = new ThreadLocal<>();
-
-    private TenantContext() {
-    }
 
     public static void setTenant(String tenant) {
         CURRENT_TENANT.set(tenant);

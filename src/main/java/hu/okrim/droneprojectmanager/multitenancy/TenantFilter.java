@@ -37,6 +37,11 @@ public class TenantFilter extends GenericFilterBean {
         }
     }
 
+    /**
+     * Extracts the tenant schema from the request.
+     * @param request the HTTP servlet request
+     * @return the tenant schema, or null if not found
+     */
     private String extractSchemaFromRequest(HttpServletRequest request) {
         // Example: Extract schema from Authorization Bearer token (JWT)
         String token = request.getHeader("Authorization");

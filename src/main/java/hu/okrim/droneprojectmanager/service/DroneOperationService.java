@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
+/**
+ * Service interface for managing DroneOperation.
+ */
 public interface DroneOperationService {
 
     /**

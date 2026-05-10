@@ -83,10 +83,8 @@ public class SchemaMultiTenantConnectionProvider
 
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+        try (connection; Statement statement = connection.createStatement()) {
             statement.execute("SET search_path TO \"" + DEFAULT_SCHEMA + "\"");
-        } finally {
-            connection.close();
         }
     }
 

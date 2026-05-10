@@ -1,5 +1,8 @@
 package hu.okrim.droneprojectmanager.security;
 
+/**
+ * Security constants to be used in the application.
+ */
 public class SecurityConstants {
     //Secret key should always be strong (uppercase, lowercase, numbers, symbols) so that nobody can potentially decode the signature.
     public static final String SECRET_KEY = "H4IItyBcabr4G^TqPA6*rb7HTcfbZaOXu$Yi#azPQ$^%CL*JvlaMTLjOtrkmkBVY6ohQ2ZKQJIX7PsO7w&BqnRH^1P%y6iQ2%R8Z";

@@ -61,12 +61,6 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
         return new OperationImageMetadataExtractionResponse(entities.size(), entities.size() - errorCount, errorCount);
     }
 
-    /**
-     * Get a page of image metadata for a specific operation.
-     * @param operationCode The code of the operation.
-     * @param pageable The pagination information.
-     * @return The page of image metadata.
-     */
     @Override
     @Transactional(readOnly = true)
     public Page<OperationImageMetadataListItemResponse> getPage(String operationCode, Pageable pageable) {
@@ -83,11 +77,6 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 .map(OperationImageMetadataMapper::toListItemResponse);
     }
 
-    /**
-     * Analyzes the flight of a drone operation and updates the operation's metadata.
-     * @param operationCode The code of the drone operation.
-     * @return The updated operation's flight analysis.
-     */
     @Override
     @Transactional
     public OperationFlightAnalysisResponse analyzeAndUpdateOperation(String operationCode) {
@@ -153,11 +142,6 @@ public class OperationImageMetadataServiceImpl implements OperationImageMetadata
                 .toList();
     }
 
-    /**
-     * Get the dashboard data for a specific operation.
-     * @param operationCode The code of the operation.
-     * @return The dashboard data for the operation.
-     */
     @Override
     public OperationImageMetadataDashboardResponse getDashboard(String operationCode) {
         List<OperationImageMetadata> metadata = imageMetadataRepository.findAllByOperationCodeOrderByCapturedAtAscCreatedAtAsc(operationCode);
