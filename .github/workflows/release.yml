@@ -17,12 +17,27 @@ jobs:
 
       - uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '25'
           distribution: 'temurin'
           cache: maven
 
       - name: Build JAR
         run: ./mvnw clean package -DskipTests -q
+
+      - name: Extract version from pom.xml
+        id: get_version
+        run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+
+      - name: Verify tag matches version
+        run: |
+          POM_VERSION="${{ steps.get_version.outputs.VERSION }}"
+          TAG="${{ github.ref_name }}"
+          # Remove 'v' prefix from tag if it exists (e.g., v1.0.0 -> 1.0.0)
+          CLEAN_TAG="${TAG#v}"
+          if [ "$POM_VERSION" != "$CLEAN_TAG" ]; then
+            echo "Error: Tag '$TAG' does not match version '$POM_VERSION' in pom.xml"
+            exit 1
+          fi
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
