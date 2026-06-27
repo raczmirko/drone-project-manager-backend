@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, SecurityConstants.REGISTER_PATH).permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/generate-account-number").permitAll()
+                        .requestMatchers("/actuator/info", "/actuator/health").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)
