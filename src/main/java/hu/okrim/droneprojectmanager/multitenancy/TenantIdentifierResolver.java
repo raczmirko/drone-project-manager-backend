@@ -24,7 +24,7 @@ public class TenantIdentifierResolver
 
     @Override
     public boolean validateExistingCurrentSessions() {
-        return true;
+        return false;  // do not validate schema on startup
     }
 
     @Override
