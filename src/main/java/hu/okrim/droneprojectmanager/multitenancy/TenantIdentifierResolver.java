@@ -33,5 +33,11 @@ public class TenantIdentifierResolver
                 AvailableSettings.MULTI_TENANT_IDENTIFIER_RESOLVER,
                 this
         );
+        // Explicitly disable schema validation — tenant schemas are created
+        // dynamically on tenant onboarding, so validation at startup is impossible
+        hibernateProperties.put(
+                AvailableSettings.HBM2DDL_AUTO,
+                "none"
+        );
     }
 }
