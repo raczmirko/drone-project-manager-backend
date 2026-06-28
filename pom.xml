@@ -17,7 +17,7 @@
 
     <groupId>hu.okrim</groupId>
     <artifactId>drone-project-manager</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>drone-project-manager</name>
     <description>A Spring Boot-based application for managing drone operations, including metadata handling, file storage, and operational insights.</description>
     <url/>
